@@ -147,8 +147,9 @@
 
     <div class="container mx-auto p-4 sm:p-6 md:p-8 max-w-7xl">
         <header class="relative text-center mb-6">
+            <img src="talismati logo.jpg" alt="Tailsmati Logo" class="mx-auto mb-4 h-16 w-auto" onerror="this.style.display='none'">
             <h1 class="text-3xl sm:text-4xl font-bold">Monthly Expense Dashboard</h1>
-            <p class="mt-2" style="color: var(--text-secondary);">Your complete financial overview.</p>
+            <p class="mt-2" style="color: var(--text-secondary);">Your personal dashboard for a complete financial overview.</p>
             <div id="profile-icon-header" class="absolute top-0 right-0 h-12 w-12 rounded-full bg-gray-200 overflow-hidden cursor-pointer"><img id="header-avatar" src="https://placehold.co/100x100/E2E8F0/4A5568?text=User" alt="User Avatar" class="h-full w-full object-cover"></div>
         </header>
 
@@ -400,679 +401,780 @@
                 </div>
             </div>
         </main>
+        <footer class="text-center mt-12 py-4 border-t" style="border-color: var(--border-color);">
+            <p class="text-sm" style="color: var(--text-secondary);">&copy; <span id="copyright-year"></span> Tailsmati. All Rights Reserved.</p>
+        </footer>
     </div>
     
     <!-- Modals -->
     <div id="budget-modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4 hidden opacity-0 modal-overlay"><div class="bg-white text-gray-800 rounded-lg shadow-xl p-6 w-full max-w-sm modal-content scale-95"><h2 class="text-xl font-semibold mb-4">Set Monthly Budget</h2><form id="budget-form"><label for="budget-input" class="block text-sm font-medium text-gray-700">Budget Amount</label><input type="number" id="budget-input" min="0" step="0.01" placeholder="e.g., 50000" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 bg-gray-50 mb-4"><div class="flex justify-end gap-3"><button type="button" id="cancel-budget-btn" class="bg-gray-200 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-300">Cancel</button><button type="submit" class="text-white py-2 px-4 rounded-md" style="background-color:var(--primary-accent);">Save</button></div></form></div></div>
     <div id="confirm-modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4 hidden opacity-0 modal-overlay"><div class="bg-white text-gray-800 rounded-lg shadow-xl p-6 w-full max-w-sm modal-content scale-95"><h2 class="text-xl font-semibold mb-2">Confirm Deletion</h2><p class="text-gray-600 mb-4">Are you sure? This cannot be undone.</p><div class="bg-gray-50 p-3 rounded-md mb-4 text-sm" id="entry-to-delete-details"></div><div class="flex justify-end gap-3"><button type="button" id="cancel-delete-btn" class="bg-gray-200 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-300">Cancel</button><button type="button" id="confirm-delete-btn" class="text-white py-2 px-4 rounded-md" style="background-color:var(--danger-accent);">Delete</button></div></div></div>
     <div id="funds-modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4 hidden opacity-0 modal-overlay"><div class="bg-white text-gray-800 rounded-lg shadow-xl p-6 w-full max-w-sm modal-content scale-95"><h2 id="funds-modal-title" class="text-xl font-semibold mb-4"></h2><form id="funds-form"><input type="hidden" id="goal-id-input"><input type="hidden" id="funds-action-input"><label for="funds-amount-input" class="block text-sm font-medium text-gray-700">Amount</label><input type="number" id="funds-amount-input" min="0.01" step="0.01" placeholder="e.g., 500" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 bg-gray-50 mb-4" required><div class="flex justify-end gap-3"><button type="button" id="cancel-funds-btn" class="bg-gray-200 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-300">Cancel</button><button type="submit" id="submit-funds-btn" class="text-white py-2 px-4 rounded-md"></button></div></form></div></div>
+    <div id="edit-modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4 hidden opacity-0 modal-overlay">
+        <div class="bg-white text-gray-800 rounded-lg shadow-xl p-6 w-full max-w-md modal-content scale-95">
+            <h2 class="text-xl font-semibold mb-4">Edit Transaction</h2>
+            <form id="edit-form">
+                <input type="hidden" id="edit-entry-id">
+                <div class="space-y-4">
+                    <div>
+                        <label for="edit-date" class="block text-sm font-medium text-gray-700">Date</label>
+                        <input type="date" id="edit-date" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 bg-gray-50">
+                    </div>
+                    <div>
+                        <label for="edit-category" class="block text-sm font-medium text-gray-700">Category</label>
+                        <select id="edit-category" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 bg-gray-50"></select>
+                    </div>
+                    <div>
+                        <label for="edit-description" class="block text-sm font-medium text-gray-700">Description</label>
+                        <input type="text" id="edit-description" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 bg-gray-50">
+                    </div>
+                    <div>
+                        <label for="edit-amount" class="block text-sm font-medium text-gray-700">Amount</label>
+                        <input type="number" id="edit-amount" required min="0.01" step="0.01" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 bg-gray-50">
+                    </div>
+                </div>
+                <div class="flex justify-end gap-3 mt-6">
+                    <button type="button" id="cancel-edit-btn" class="bg-gray-200 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-300">Cancel</button>
+                    <button type="submit" class="text-white py-2 px-4 rounded-md" style="background-color:var(--primary-accent);">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // --- State Variables ---
-        let allEntries = [];
-        let budgets = {};
-        let profileData = {};
-        let savingsGoals = [];
-        let recurringTransactions = [];
-        let expenseCategories = [];
-        let incomeCategories = [];
-        let settings = {
-            theme: 'default',
-            currencySymbol: '৳'
-        };
-        let currentLogFilter = 'all'; 
-        let entryToDeleteId = null;
-        let categoryTrendView = 'monthly'; // 'monthly' or 'daily'
-        let categoryChart, trendChart, monthlyComparisonChart, categoryDeepDiveChart;
-
-        // --- DOM Elements ---
-        const expenseForm = document.getElementById('expense-form');
-        const habitForm = document.getElementById('habit-form');
-        const incomeForm = document.getElementById('income-form');
-        const expenseTableBody = document.getElementById('expense-table-body');
-        const monthSelect = document.getElementById('month-select');
-        const yearSelect = document.getElementById('year-select');
-        const setBudgetBtn = document.getElementById('set-budget-btn');
-        const logFilters = document.getElementById('log-filters');
-        const logSearchInput = document.getElementById('log-search-input');
-        const toastContainer = document.getElementById('toast-container');
-        // Reports
-        const categoryDeepDiveSelect = document.getElementById('category-deep-dive-select');
-        const categoryTrendViewToggle = document.getElementById('category-trend-view-toggle');
-        // Recurring
-        const recurringTransactionForm = document.getElementById('recurring-transaction-form');
-        const recurringTransactionsContainer = document.getElementById('recurring-transactions-container');
-        const recurringCategorySelect = document.getElementById('recurring-category');
-        const recurringTypeSelect = document.getElementById('recurring-type');
-        // Savings
-        const savingsGoalForm = document.getElementById('savings-goal-form');
-        const savingsGoalsContainer = document.getElementById('savings-goals-container');
-        // Modals
-        const budgetModal = document.getElementById('budget-modal');
-        const budgetForm = document.getElementById('budget-form');
-        const budgetInput = document.getElementById('budget-input');
-        const cancelBudgetBtn = document.getElementById('cancel-budget-btn');
-        const confirmModal = document.getElementById('confirm-modal');
-        const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
-        const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
-        const fundsModal = document.getElementById('funds-modal');
-        const fundsForm = document.getElementById('funds-form');
-        const cancelFundsBtn = document.getElementById('cancel-funds-btn');
-        // Settings
-        const settingsMenu = document.getElementById('settings-menu');
-        const addExpenseCategoryForm = document.getElementById('add-expense-category-form');
-        const expenseCategoriesList = document.getElementById('expense-categories-list');
-        const addIncomeCategoryForm = document.getElementById('add-income-category-form');
-        const incomeCategoriesList = document.getElementById('income-categories-list');
-        // Profile (now inside settings)
-        const profileIconHeader = document.getElementById('profile-icon-header');
-        const headerAvatar = document.getElementById('header-avatar');
-        const profileForm = document.getElementById('profile-form');
-        const userNameInput = document.getElementById('user-name');
-        const avatarPreview = document.getElementById('profile-avatar-preview');
-        const avatarUploadInput = document.getElementById('avatar-upload');
-        const uploadAvatarBtn = document.getElementById('upload-avatar-btn');
-        // Settings (Appearance/Data)
-        const themeSelect = document.getElementById('theme-select');
-        const currencySymbolInput = document.getElementById('currency-symbol');
-        const exportDataBtn = document.getElementById('export-data-btn');
-        const importDataBtn = document.getElementById('import-data-btn');
-        const importFileInput = document.getElementById('import-file-input');
-        const clearDataBtn = document.getElementById('clear-data-btn');
-        // Tabs
-        const tabs = {
-            dashboard: { btn: document.getElementById('dashboard-tab'), view: document.getElementById('dashboard-view') },
-            addTransaction: { btn: document.getElementById('add-transaction-tab'), view: document.getElementById('add-transaction-view') },
-            log: { btn: document.getElementById('log-tab'), view: document.getElementById('log-view') },
-            reports: { btn: document.getElementById('reports-tab'), view: document.getElementById('reports-view') },
-            recurring: { btn: document.getElementById('recurring-tab'), view: document.getElementById('recurring-view') },
-            savings: { btn: document.getElementById('savings-tab'), view: document.getElementById('savings-view') },
-            settings: { btn: document.getElementById('settings-tab'), view: document.getElementById('settings-view') }
-        };
-
-        // --- Toast Notification Function ---
-        const showToast = (message, type = 'success') => {
-            const toast = document.createElement('div');
-            toast.className = `toast toast-${type}`;
-            toast.textContent = message;
-            toastContainer.appendChild(toast);
-            setTimeout(() => { toast.classList.add('show'); }, 100);
-            setTimeout(() => { toast.classList.remove('show'); toast.addEventListener('transitionend', () => toast.remove()); }, 3000);
-        };
-
-        // --- Core Functions ---
-        const switchTab = (tabName) => {
-            Object.keys(tabs).forEach(key => {
-                const isSelected = key === tabName;
-                tabs[key].btn.classList.toggle('active', isSelected);
-                tabs[key].view.classList.toggle('hidden', !isSelected);
-            });
-            if (tabName === 'log') { setLogFilter('all'); logSearchInput.value = ''; }
-            if (tabName === 'reports') {
-                categoryTrendView = 'monthly';
-                document.querySelector('.category-trend-view-btn[data-view="monthly"]').classList.add('active');
-                document.querySelector('.category-trend-view-btn[data-view="daily"]').classList.remove('active');
-                renderReports();
-            }
-        };
-
-        const formatCurrency = (amount) => `${settings.currencySymbol}${parseFloat(amount || 0).toFixed(2)}`;
-        const formatDate = (dateString) => new Date(dateString + 'T00:00:00').toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-        const escapeHTML = (str) => { const p = document.createElement('p'); p.textContent = str; return p.innerHTML; };
-        const getCurrentPeriodKey = () => `${yearSelect.value}-${String(parseInt(monthSelect.value) + 1).padStart(2, '0')}`;
-        const getCategoryClass = (category, isHabit) => {
-            if (isHabit) return 'bg-purple-100 text-purple-800';
-            if (category === 'Savings Allocation') return 'bg-indigo-100 text-indigo-800';
-            if (category === 'Savings Withdrawal') return 'bg-teal-100 text-teal-800';
-            return 'bg-gray-100 text-gray-800'; // Default for custom categories
-        };
-        
-        const updateDashboard = () => {
-            const periodKey = getCurrentPeriodKey();
-            const monthlyEntries = allEntries.filter(entry => entry.date.startsWith(periodKey));
-            const monthlyBudget = budgets[periodKey] || 0;
-            updateSummary(monthlyEntries, monthlyBudget);
-            renderCategoryChart(monthlyEntries);
-            renderTrendChart(monthlyEntries);
-        };
-        
-        const updateSummary = (entries, budget) => {
-            const totalExpenses = entries.filter(e => e.type === 'expense').reduce((sum, exp) => sum + exp.amount, 0);
-            const totalHabitExpenses = entries.filter(e => e.isHabit).reduce((sum, exp) => sum + exp.amount, 0);
-            const totalIncome = entries.filter(e => e.type === 'income').reduce((sum, inc) => sum + inc.amount, 0);
-            const remaining = budget - totalExpenses;
-            const balance = totalIncome - totalExpenses;
-            
-            document.getElementById('total-expenses').textContent = formatCurrency(totalExpenses);
-            document.getElementById('total-habit-expenses').textContent = formatCurrency(totalHabitExpenses);
-            document.getElementById('total-income').textContent = formatCurrency(totalIncome);
-            document.getElementById('monthly-budget').textContent = formatCurrency(budget);
-            document.getElementById('remaining-budget').textContent = formatCurrency(remaining);
-            document.getElementById('net-balance').textContent = formatCurrency(balance);
-            
-            document.getElementById('remaining-budget').style.color = remaining < 0 ? 'var(--danger-accent)' : 'var(--success-accent)';
-            document.getElementById('net-balance').style.color = balance < 0 ? 'var(--danger-accent)' : 'var(--success-accent)';
-            document.getElementById('budget-warning').classList.toggle('hidden', !(budget > 0 && totalExpenses > budget));
-        };
-
-        const renderTable = (entries) => {
-            let filteredEntries = [...entries];
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-
-            // Filter by date range
-            if (currentLogFilter === 'today') filteredEntries = entries.filter(entry => new Date(entry.date + 'T00:00:00').getTime() === today.getTime());
-            else if (currentLogFilter === 'yesterday') { const y = new Date(today); y.setDate(today.getDate() - 1); filteredEntries = entries.filter(entry => new Date(entry.date + 'T00:00:00').getTime() === y.getTime()); } 
-            else if (currentLogFilter === 'last7days') { const s = new Date(today); s.setDate(today.getDate() - 6); filteredEntries = entries.filter(entry => new Date(entry.date + 'T00:00:00') >= s); } 
-            else if (currentLogFilter === 'expenses') filteredEntries = entries.filter(entry => entry.type === 'expense');
-            else if (currentLogFilter === 'income') filteredEntries = entries.filter(entry => entry.type === 'income');
-
-            // Filter by search term
-            const searchTerm = logSearchInput.value.toLowerCase();
-            if (searchTerm) {
-                filteredEntries = filteredEntries.filter(entry => entry.description.toLowerCase().includes(searchTerm));
-            }
-
-            filteredEntries.sort((a, b) => new Date(b.date) - new Date(a.date));
-            expenseTableBody.innerHTML = filteredEntries.length === 0 ? `<tr><td colspan="6" class="px-6 py-12 text-center" style="color: var(--text-secondary);">No entries found.</td></tr>` : '';
-            
-            filteredEntries.forEach(entry => {
-                const isIncome = entry.type === 'income';
-                const row = document.createElement('tr');
-                row.innerHTML = `<td class="px-6 py-4 whitespace-nowrap text-sm">${formatDate(entry.date)}</td><td class="px-6 py-4 whitespace-nowrap text-sm"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${isIncome ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'}">${isIncome ? 'Income' : 'Expense'}</span></td><td class="px-6 py-4 whitespace-nowrap text-sm"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getCategoryClass(entry.category, entry.isHabit)}">${escapeHTML(entry.category)}</span></td><td class="px-6 py-4 whitespace-nowrap text-sm">${escapeHTML(entry.description)}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-right font-medium" style="color:${isIncome ? 'var(--success-accent)' : 'var(--danger-accent)'}">${formatCurrency(entry.amount)}</td><td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium"><button data-id="${entry.id}" class="delete-btn font-semibold" style="color:var(--danger-accent);">Delete</button></td>`;
-                expenseTableBody.appendChild(row);
-            });
-        };
-        
-        const renderCategoryChart = (entries) => {
-            const ctx = document.getElementById('category-chart').getContext('2d');
-            const expenseEntries = entries.filter(e => e.type === 'expense');
-            const categoryTotals = expenseEntries.reduce((acc, exp) => { acc[exp.category] = (acc[exp.category] || 0) + exp.amount; return acc; }, {});
-            if (categoryChart) categoryChart.destroy();
-            categoryChart = new Chart(ctx, { type: 'doughnut', data: { labels: Object.keys(categoryTotals), datasets: [{ data: Object.values(categoryTotals), backgroundColor: ['#ef4444', '#f97316', '#eab308', '#84cc16', '#22c55e', '#14b8a6', '#06b6d4', '#3b82f6', '#8b5cf6', '#d946ef', '#6366f1'], borderWidth: 1 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: 'var(--text-secondary)'} } } } });
-        };
-
-        const renderTrendChart = (entries) => {
-            const ctx = document.getElementById('trend-chart').getContext('2d');
-            const daysInMonth = new Date(yearSelect.value, parseInt(monthSelect.value) + 1, 0).getDate();
-            const dailyTotals = Array(daysInMonth).fill(0);
-            entries.filter(e => e.type === 'expense').forEach(exp => { const day = new Date(exp.date + 'T00:00:00').getDate() - 1; if (day >= 0 && day < daysInMonth) dailyTotals[day] += exp.amount; });
-            
-            const computedStyle = getComputedStyle(document.documentElement);
-            const primaryColor = computedStyle.getPropertyValue('--primary-accent').trim();
-
-            if (trendChart) trendChart.destroy();
-            trendChart = new Chart(ctx, { type: 'line', data: { labels: Array.from({ length: daysInMonth }, (_, i) => i + 1), datasets: [{ label: 'Daily Spending', data: dailyTotals, fill: false, borderColor: primaryColor, tension: 0.1 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: {color: 'var(--text-secondary)'} }, x: { ticks: {color: 'var(--text-secondary)'} } }, plugins: { legend: { labels: {color: 'var(--text-secondary)'}}} } });
-        };
-
-        const addEntry = (e) => {
-            e.preventDefault();
-            const formId = e.target.id;
-            let newEntry;
-            if (formId === 'income-form') newEntry = { id: Date.now(), type: 'income', date: e.target['income-date'].value, category: e.target['income-category'].value, description: e.target['income-description'].value, amount: parseFloat(e.target['income-amount'].value) };
-            else { const isHabit = formId === 'habit-form'; newEntry = { id: Date.now(), type: 'expense', date: e.target[isHabit ? 'habit-date' : 'date'].value, category: isHabit ? 'Habit' : e.target.category.value, description: e.target[isHabit ? 'habit-description' : 'description'].value, amount: parseFloat(e.target[isHabit ? 'habit-amount' : 'amount'].value), isHabit }; }
-            allEntries.push(newEntry);
-            localStorage.setItem('allEntries', JSON.stringify(allEntries));
-            
-            updateDashboard();
-            if(!tabs.log.view.classList.contains('hidden')) renderTable(allEntries);
-            showToast(formId.includes('income') ? 'Income added!' : 'Expense added!', 'success');
-            e.target.reset();
-            document.querySelectorAll('input[type="date"]').forEach(input => input.valueAsDate = new Date());
-        };
-
-        const deleteEntry = (id) => {
-            const entryToDelete = allEntries.find(e => e.id === id);
-            if (entryToDelete && entryToDelete.goalId) {
-                const goal = savingsGoals.find(g => g.id === entryToDelete.goalId);
-                if (goal) {
-                    if (entryToDelete.category === 'Savings Allocation') {
-                         goal.currentAmount = Math.max(0, (goal.currentAmount || 0) - entryToDelete.amount);
-                    } else if (entryToDelete.category === 'Savings Withdrawal') {
-                         goal.currentAmount = (goal.currentAmount || 0) + entryToDelete.amount;
-                    }
-                }
-                saveSavingsGoals();
-            }
-            allEntries = allEntries.filter(entry => entry.id !== id);
-            localStorage.setItem('allEntries', JSON.stringify(allEntries));
-            updateDashboard();
-            renderTable(allEntries);
-            renderSavingsGoals();
-        };
-
-        // --- Reports Functions ---
-        const renderReports = () => {
-            renderMonthlyComparisonChart();
-            populateCategorySelectForDeepDive();
-            renderCategoryDeepDiveChart();
-        };
-
-        const renderMonthlyComparisonChart = () => {
-            const ctx = document.getElementById('monthly-comparison-chart').getContext('2d');
-            const labels = [];
-            const incomeData = [];
-            const expenseData = [];
-            const today = new Date();
-
-            for (let i = 5; i >= 0; i--) {
-                const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
-                const year = d.getFullYear();
-                const month = d.getMonth() + 1;
-                const monthKey = `${year}-${String(month).padStart(2, '0')}`;
-                
-                labels.push(d.toLocaleString('default', { month: 'short', year: 'numeric' }));
-                
-                const monthlyEntries = allEntries.filter(e => e.date.startsWith(monthKey));
-                incomeData.push(monthlyEntries.filter(e => e.type === 'income').reduce((sum, e) => sum + e.amount, 0));
-                expenseData.push(monthlyEntries.filter(e => e.type === 'expense').reduce((sum, e) => sum + e.amount, 0));
-            }
-
-            const computedStyle = getComputedStyle(document.documentElement);
-            const successColor = computedStyle.getPropertyValue('--success-accent').trim();
-            const dangerColor = computedStyle.getPropertyValue('--danger-accent').trim();
-
-            if (monthlyComparisonChart) monthlyComparisonChart.destroy();
-            monthlyComparisonChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels,
-                    datasets: [
-                        { label: 'Income', data: incomeData, backgroundColor: successColor },
-                        { label: 'Expenses', data: expenseData, backgroundColor: dangerColor }
-                    ]
-                },
-                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { color: 'var(--text-secondary)' } }, x: { ticks: { color: 'var(--text-secondary)' } } }, plugins: { legend: { labels: { color: 'var(--text-secondary)' } } } }
-            });
-        };
-        
-        const populateCategorySelectForDeepDive = () => {
-            const categories = [...new Set(allEntries.filter(e => e.type === 'expense').map(e => e.category))];
-            categoryDeepDiveSelect.innerHTML = categories.length === 0 ? '<option>No categories yet</option>' : '';
-            categories.forEach(cat => {
-                const option = document.createElement('option');
-                option.value = cat;
-                option.textContent = cat;
-                categoryDeepDiveSelect.appendChild(option);
-            });
-        };
-
-        const renderCategoryDeepDiveChart = () => {
-            const ctx = document.getElementById('category-deep-dive-chart').getContext('2d');
-            const selectedCategory = categoryDeepDiveSelect.value;
-            let labels = [], spendingData = [], chartLabel = '';
-
-            if (categoryTrendView === 'monthly') {
-                chartLabel = `${selectedCategory} Spending (Monthly)`;
-                const today = new Date();
-                for (let i = 5; i >= 0; i--) {
-                    const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
-                    const monthKey = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-                    labels.push(d.toLocaleString('default', { month: 'short' }));
-                    const categorySpending = allEntries.filter(e => e.date.startsWith(monthKey) && e.type === 'expense' && e.category === selectedCategory).reduce((sum, e) => sum + e.amount, 0);
-                    spendingData.push(categorySpending);
-                }
-            } else { // Daily view
-                const selectedYear = parseInt(yearSelect.value, 10), selectedMonth = parseInt(monthSelect.value, 10);
-                chartLabel = `${selectedCategory} Spending (Daily for ${monthSelect.options[monthSelect.selectedIndex].text} ${selectedYear})`;
-                const daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
-                labels = Array.from({ length: daysInMonth }, (_, i) => i + 1);
-                spendingData = Array(daysInMonth).fill(0);
-                
-                const relevantEntries = allEntries.filter(e => { const d = new Date(e.date + 'T00:00:00'); return e.type === 'expense' && e.category === selectedCategory && d.getFullYear() === selectedYear && d.getMonth() === selectedMonth; });
-                relevantEntries.forEach(entry => { const day = new Date(entry.date + 'T00:00:00').getDate() - 1; spendingData[day] += entry.amount; });
-            }
-
-             const computedStyle = getComputedStyle(document.documentElement);
-             const primaryColor = computedStyle.getPropertyValue('--primary-accent').trim();
-
-             if (categoryDeepDiveChart) categoryDeepDiveChart.destroy();
-             categoryDeepDiveChart = new Chart(ctx, { type: 'line', data: { labels, datasets: [{ label: chartLabel, data: spendingData, borderColor: primaryColor, tension: 0.1, fill: false }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { color: 'var(--text-secondary)' } }, x: { ticks: { color: 'var(--text-secondary)' } } }, plugins: { legend: { labels: { color: 'var(--text-secondary)' } } } } });
-        };
-
-
-        // --- Recurring Transactions Functions ---
-        const renderRecurringTransactions = () => {
-            recurringTransactionsContainer.innerHTML = recurringTransactions.length === 0 ? `<p style="color: var(--text-secondary);">No recurring transactions set up.</p>` : '';
-            recurringTransactions.forEach(item => {
-                const itemEl = document.createElement('div');
-                itemEl.className = 'p-3 rounded-md flex justify-between items-center text-white';
-                itemEl.style.backgroundColor = item.type === 'income' ? 'var(--success-accent)' : 'var(--danger-accent)';
-                itemEl.innerHTML = `<div><p class="font-bold">${escapeHTML(item.description)} - ${formatCurrency(item.amount)}</p><p class="text-sm opacity-90">${item.frequency.charAt(0).toUpperCase() + item.frequency.slice(1)} starting ${formatDate(item.startDate)}</p></div><button data-id="${item.id}" class="delete-recurring-btn font-bold text-lg">&times;</button>`;
-                recurringTransactionsContainer.appendChild(itemEl);
-            });
-        };
-
-        const addRecurringTransaction = (e) => {
-            e.preventDefault();
-            const form = recurringTransactionForm.elements;
-            const newRecurring = { id: Date.now(), type: form['recurring-type'].value, description: form['recurring-description'].value, amount: parseFloat(form['recurring-amount'].value), category: form['recurring-category'].value, frequency: form['recurring-frequency'].value, startDate: form['recurring-start-date'].value, lastProcessedDate: null };
-            recurringTransactions.push(newRecurring);
-            saveRecurringTransactions(); renderRecurringTransactions();
-            showToast('Recurring transaction added!', 'success');
-            recurringTransactionForm.reset(); document.getElementById('recurring-start-date').valueAsDate = new Date();
-        };
-
-        const deleteRecurringTransaction = (id) => { recurringTransactions = recurringTransactions.filter(item => item.id !== id); saveRecurringTransactions(); renderRecurringTransactions(); showToast('Recurring transaction removed.', 'info'); };
-        
-        const processRecurringTransactions = () => {
-            const today = new Date(); today.setHours(0, 0, 0, 0); let newEntriesMade = false;
-            recurringTransactions.forEach(item => {
-                let nextDueDate = new Date(item.startDate + 'T00:00:00');
-                const lastProcessed = item.lastProcessedDate ? new Date(item.lastProcessedDate + 'T00:00:00') : null;
-                if (lastProcessed) {
-                    nextDueDate = new Date(lastProcessed);
-                    if (item.frequency === 'weekly') nextDueDate.setDate(nextDueDate.getDate() + 7);
-                    else if (item.frequency === 'monthly') nextDueDate.setMonth(nextDueDate.getMonth() + 1);
-                    else if (item.frequency === 'yearly') nextDueDate.setFullYear(nextDueDate.getFullYear() + 1);
-                }
-                while (nextDueDate <= today) {
-                    const dateStr = nextDueDate.toISOString().split('T')[0];
-                    if (!allEntries.some(e => e.recurringId === item.id && e.date === dateStr)) {
-                        allEntries.push({ id: Date.now() + Math.random(), recurringId: item.id, type: item.type, date: dateStr, category: item.category, description: item.description, amount: item.amount, isHabit: false });
-                        newEntriesMade = true;
-                    }
-                    item.lastProcessedDate = dateStr;
-                    if (item.frequency === 'weekly') nextDueDate.setDate(nextDueDate.getDate() + 7);
-                    else if (item.frequency === 'monthly') nextDueDate.setMonth(nextDueDate.getMonth() + 1);
-                    else if (item.frequency === 'yearly') nextDueDate.setFullYear(nextDueDate.getFullYear() + 1);
-                }
-            });
-            if (newEntriesMade) { localStorage.setItem('allEntries', JSON.stringify(allEntries)); saveRecurringTransactions(); showToast('Recurring transactions processed.', 'info'); }
-        };
-
-        const loadRecurringTransactions = () => { recurringTransactions = JSON.parse(localStorage.getItem('recurringTransactions')) || []; renderRecurringTransactions(); };
-        const saveRecurringTransactions = () => localStorage.setItem('recurringTransactions', JSON.stringify(recurringTransactions));
-        
-        const populateRecurringCategorySelect = () => {
-            const type = recurringTypeSelect.value;
-            const options = type === 'expense' ? expenseCategories : incomeCategories;
-            recurringCategorySelect.innerHTML = '';
-            options.forEach(opt => { const option = document.createElement('option'); option.value = opt; option.textContent = opt; recurringCategorySelect.appendChild(option); });
-        };
-
-        // --- Savings Goals Functions ---
-        const renderSavingsGoals = () => {
-            savingsGoalsContainer.innerHTML = savingsGoals.length === 0 ? `<p style="color: var(--text-secondary);">No savings goals set.</p>` : '';
-            savingsGoals.forEach(goal => {
-                const currentAmount = goal.currentAmount || 0;
-                const progress = Math.max(0, Math.min(100, (currentAmount / goal.targetAmount) * 100));
-                const goalEl = document.createElement('div'); goalEl.className = 'border-b pb-4'; goalEl.style.borderColor = 'var(--border-color)';
-                goalEl.innerHTML = `
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="font-semibold">${escapeHTML(goal.name)}</span>
-                        <span class="text-sm font-medium" style="color: var(--text-secondary);">${formatCurrency(currentAmount)} / ${formatCurrency(goal.targetAmount)}</span>
-                    </div>
-                    <div class="w-full bg-gray-200 rounded-full h-4 dark:bg-gray-700">
-                        <div class="h-4 rounded-full" style="width: ${progress}%; background-color: var(--success-accent);"></div>
-                    </div>
-                    <div class="flex justify-between items-center mt-2">
-                        <span class="text-sm font-medium" style="color: var(--primary-accent);">${progress.toFixed(1)}% Complete</span>
-                        <div class="flex gap-2">
-                            <button data-id="${goal.id}" data-action="withdraw" class="funds-btn text-xs font-semibold py-1 px-2 rounded" style="color: var(--danger-accent); border: 1px solid currentColor;">Withdraw</button>
-                            <button data-id="${goal.id}" data-action="add" class="funds-btn text-xs font-semibold py-1 px-2 rounded" style="color: var(--success-accent); border: 1px solid currentColor;">Add Funds</button>
-                            <button data-id="${goal.id}" class="delete-goal-btn text-xs font-semibold py-1 px-2" style="color: var(--danger-accent);">&times;</button>
-                        </div>
-                    </div>`;
-                savingsGoalsContainer.appendChild(goalEl);
-            });
-        };
-
-        const addSavingsGoal = (e) => { e.preventDefault(); const n = document.getElementById('goal-name-input').value; const a = parseFloat(document.getElementById('goal-amount-input').value); if (n && a > 0) { savingsGoals.push({ id: Date.now(), name:n, targetAmount: a, currentAmount: 0 }); saveSavingsGoals(); renderSavingsGoals(); showToast('Savings goal added!', 'success'); savingsGoalForm.reset(); } };
-        const deleteSavingsGoal = (id) => { savingsGoals = savingsGoals.filter(goal => goal.id !== id); saveSavingsGoals(); renderSavingsGoals(); showToast('Savings goal removed.', 'info'); };
-        
-        const handleFunds = (e) => {
-            e.preventDefault();
-            const goalId = parseInt(fundsForm.elements['goal-id-input'].value, 10);
-            const amount = parseFloat(fundsForm.elements['funds-amount-input'].value);
-            const action = fundsForm.elements['funds-action-input'].value;
-            const goal = savingsGoals.find(g => g.id === goalId);
-
-            if (!goal || !amount > 0) return;
-            
-            let newEntry;
-            if (action === 'add') {
-                goal.currentAmount = (goal.currentAmount || 0) + amount;
-                newEntry = { id: Date.now(), type: 'expense', date: new Date().toISOString().split('T')[0], category: 'Savings Allocation', description: `Contribution to "${goal.name}"`, amount, isHabit: false, goalId, isSavings: true };
-            } else { // withdraw
-                if (amount > goal.currentAmount) {
-                    showToast('Withdrawal cannot exceed current saved amount.', 'error');
-                    return;
-                }
-                goal.currentAmount -= amount;
-                newEntry = { id: Date.now(), type: 'income', date: new Date().toISOString().split('T')[0], category: 'Savings Withdrawal', description: `Withdrawal from "${goal.name}"`, amount, isHabit: false, goalId, isSavings: true };
-            }
-
-            allEntries.push(newEntry);
-            saveSavingsGoals();
-            localStorage.setItem('allEntries', JSON.stringify(allEntries));
-            renderSavingsGoals();
-            updateDashboard();
-            showToast(`Transaction successful!`, 'success');
-            toggleModal(fundsModal, false);
-        };
-
-
-        const loadSavingsGoals = () => { savingsGoals = JSON.parse(localStorage.getItem('savingsGoals')) || []; renderSavingsGoals(); };
-        const saveSavingsGoals = () => localStorage.setItem('savingsGoals', JSON.stringify(savingsGoals));
-
-        // --- Modal Functions ---
-        const toggleModal = (modal, show) => { const c = modal.querySelector('.modal-content'); if (show) { modal.classList.remove('hidden'); setTimeout(() => { modal.classList.remove('opacity-0'); c.classList.remove('scale-95'); }, 10); } else { modal.classList.add('opacity-0'); c.classList.add('scale-95'); setTimeout(() => modal.classList.add('hidden'), 300); } };
-        const openDeleteConfirmation = (id) => { entryToDeleteId = id; const e = allEntries.find(i => i.id === id); if (e) { document.getElementById('entry-to-delete-details').innerHTML = `<strong>${escapeHTML(e.category)}:</strong> ${escapeHTML(e.description)} - ${formatCurrency(e.amount)}`; toggleModal(confirmModal, true); } };
-        
-        // --- Category Management ---
-        const renderCategories = () => {
-            expenseCategoriesList.innerHTML = '';
-            expenseCategories.forEach(cat => {
-                const el = document.createElement('div');
-                el.className = 'flex justify-between items-center p-2 rounded-md bg-gray-500/10';
-                el.innerHTML = `<span>${escapeHTML(cat)}</span><button data-category="${escapeHTML(cat)}" class="delete-expense-category-btn text-red-500 font-bold">&times;</button>`;
-                expenseCategoriesList.appendChild(el);
-            });
-
-            incomeCategoriesList.innerHTML = '';
-            incomeCategories.forEach(cat => {
-                const el = document.createElement('div');
-                el.className = 'flex justify-between items-center p-2 rounded-md bg-gray-500/10';
-                el.innerHTML = `<span>${escapeHTML(cat)}</span><button data-category="${escapeHTML(cat)}" class="delete-income-category-btn text-red-500 font-bold">&times;</button>`;
-                incomeCategoriesList.appendChild(el);
-            });
-            populateAllCategorySelects();
-        };
-
-        const addCategory = (type, e) => {
-            e.preventDefault();
-            const input = document.getElementById(`new-${type}-category-input`);
-            const categoryName = input.value.trim();
-            if (!categoryName) return;
-
-            const list = type === 'expense' ? expenseCategories : incomeCategories;
-            if (list.includes(categoryName)) {
-                showToast('Category already exists.', 'error');
-                return;
-            }
-            list.push(categoryName);
-            saveCategories();
-            renderCategories();
-            input.value = '';
-        };
-
-        const deleteCategory = (type, categoryName) => {
-             if (allEntries.some(e => e.category === categoryName)) {
-                showToast('Cannot delete category as it is used in some transactions.', 'error');
-                return;
-            }
-            if (type === 'expense') {
-                expenseCategories = expenseCategories.filter(c => c !== categoryName);
-            } else {
-                incomeCategories = incomeCategories.filter(c => c !== categoryName);
-            }
-            saveCategories();
-            renderCategories();
-        };
-
-        const loadCategories = () => {
-            expenseCategories = JSON.parse(localStorage.getItem('expenseCategories')) || ['Food', 'Grocery', 'Transport', 'Utilities', 'Entertainment', 'Health', 'Shopping', 'Other'];
-            incomeCategories = JSON.parse(localStorage.getItem('incomeCategories')) || ['Salary', 'Freelance', 'Gift', 'Investment', 'Other'];
-            renderCategories();
-        };
-        const saveCategories = () => {
-            localStorage.setItem('expenseCategories', JSON.stringify(expenseCategories));
-            localStorage.setItem('incomeCategories', JSON.stringify(incomeCategories));
-        };
-
-        const populateAllCategorySelects = () => {
-            const selects = {
-                'category': expenseCategories,
-                'income-category': incomeCategories,
+    window.addEventListener('load', () => {
+        const initializeApp = () => {
+            // --- State Variables ---
+            let allEntries = [];
+            let budgets = {};
+            let profileData = {};
+            let savingsGoals = [];
+            let recurringTransactions = [];
+            let expenseCategories = [];
+            let incomeCategories = [];
+            let settings = {
+                theme: 'default',
+                currencySymbol: '৳'
             };
-            for (const [id, cats] of Object.entries(selects)) {
-                const selectEl = document.getElementById(id);
-                selectEl.innerHTML = '';
-                cats.forEach(cat => {
+            let currentLogFilter = 'all'; 
+            let entryToDeleteId = null;
+            let categoryTrendView = 'monthly'; // 'monthly' or 'daily'
+            let categoryChart, trendChart, monthlyComparisonChart, categoryDeepDiveChart;
+
+            // --- DOM Elements ---
+            const expenseForm = document.getElementById('expense-form');
+            const habitForm = document.getElementById('habit-form');
+            const incomeForm = document.getElementById('income-form');
+            const expenseTableBody = document.getElementById('expense-table-body');
+            const monthSelect = document.getElementById('month-select');
+            const yearSelect = document.getElementById('year-select');
+            const setBudgetBtn = document.getElementById('set-budget-btn');
+            const logFilters = document.getElementById('log-filters');
+            const logSearchInput = document.getElementById('log-search-input');
+            const toastContainer = document.getElementById('toast-container');
+            // Reports
+            const categoryDeepDiveSelect = document.getElementById('category-deep-dive-select');
+            const categoryTrendViewToggle = document.getElementById('category-trend-view-toggle');
+            // Recurring
+            const recurringTransactionForm = document.getElementById('recurring-transaction-form');
+            const recurringTransactionsContainer = document.getElementById('recurring-transactions-container');
+            const recurringCategorySelect = document.getElementById('recurring-category');
+            const recurringTypeSelect = document.getElementById('recurring-type');
+            // Savings
+            const savingsGoalForm = document.getElementById('savings-goal-form');
+            const savingsGoalsContainer = document.getElementById('savings-goals-container');
+            // Modals
+            const budgetModal = document.getElementById('budget-modal');
+            const budgetForm = document.getElementById('budget-form');
+            const budgetInput = document.getElementById('budget-input');
+            const cancelBudgetBtn = document.getElementById('cancel-budget-btn');
+            const confirmModal = document.getElementById('confirm-modal');
+            const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
+            const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+            const fundsModal = document.getElementById('funds-modal');
+            const fundsForm = document.getElementById('funds-form');
+            const cancelFundsBtn = document.getElementById('cancel-funds-btn');
+            const editModal = document.getElementById('edit-modal');
+            const editForm = document.getElementById('edit-form');
+            const cancelEditBtn = document.getElementById('cancel-edit-btn');
+
+            // Settings
+            const settingsMenu = document.getElementById('settings-menu');
+            const addExpenseCategoryForm = document.getElementById('add-expense-category-form');
+            const expenseCategoriesList = document.getElementById('expense-categories-list');
+            const addIncomeCategoryForm = document.getElementById('add-income-category-form');
+            const incomeCategoriesList = document.getElementById('income-categories-list');
+            // Profile (now inside settings)
+            const profileIconHeader = document.getElementById('profile-icon-header');
+            const headerAvatar = document.getElementById('header-avatar');
+            const profileForm = document.getElementById('profile-form');
+            const userNameInput = document.getElementById('user-name');
+            const avatarPreview = document.getElementById('profile-avatar-preview');
+            const avatarUploadInput = document.getElementById('avatar-upload');
+            const uploadAvatarBtn = document.getElementById('upload-avatar-btn');
+            // Settings (Appearance/Data)
+            const themeSelect = document.getElementById('theme-select');
+            const currencySymbolInput = document.getElementById('currency-symbol');
+            const exportDataBtn = document.getElementById('export-data-btn');
+            const importDataBtn = document.getElementById('import-data-btn');
+            const importFileInput = document.getElementById('import-file-input');
+            const clearDataBtn = document.getElementById('clear-data-btn');
+            // Tabs
+            const tabs = {
+                dashboard: { btn: document.getElementById('dashboard-tab'), view: document.getElementById('dashboard-view') },
+                addTransaction: { btn: document.getElementById('add-transaction-tab'), view: document.getElementById('add-transaction-view') },
+                log: { btn: document.getElementById('log-tab'), view: document.getElementById('log-view') },
+                reports: { btn: document.getElementById('reports-tab'), view: document.getElementById('reports-view') },
+                recurring: { btn: document.getElementById('recurring-tab'), view: document.getElementById('recurring-view') },
+                savings: { btn: document.getElementById('savings-tab'), view: document.getElementById('savings-view') },
+                settings: { btn: document.getElementById('settings-tab'), view: document.getElementById('settings-view') }
+            };
+
+            // --- Toast Notification Function ---
+            const showToast = (message, type = 'success') => {
+                const toast = document.createElement('div');
+                toast.className = `toast toast-${type}`;
+                toast.textContent = message;
+                toastContainer.appendChild(toast);
+                setTimeout(() => { toast.classList.add('show'); }, 100);
+                setTimeout(() => { toast.classList.remove('show'); toast.addEventListener('transitionend', () => toast.remove()); }, 3000);
+            };
+
+            // --- Core Functions ---
+            const switchTab = (tabName) => {
+                Object.keys(tabs).forEach(key => {
+                    const isSelected = key === tabName;
+                    tabs[key].btn.classList.toggle('active', isSelected);
+                    tabs[key].view.classList.toggle('hidden', !isSelected);
+                });
+                if (tabName === 'log') { setLogFilter('all'); logSearchInput.value = ''; }
+                if (tabName === 'reports') {
+                    categoryTrendView = 'monthly';
+                    document.querySelector('.category-trend-view-btn[data-view="monthly"]').classList.add('active');
+                    document.querySelector('.category-trend-view-btn[data-view="daily"]').classList.remove('active');
+                    renderReports();
+                }
+            };
+
+            const formatCurrency = (amount) => `${settings.currencySymbol}${parseFloat(amount || 0).toFixed(2)}`;
+            const formatDate = (dateString) => new Date(dateString + 'T00:00:00').toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+            const escapeHTML = (str) => { const p = document.createElement('p'); p.textContent = str; return p.innerHTML; };
+            const getCurrentPeriodKey = () => `${yearSelect.value}-${String(parseInt(monthSelect.value) + 1).padStart(2, '0')}`;
+            const getCategoryClass = (category, isHabit) => {
+                if (isHabit) return 'bg-purple-100 text-purple-800';
+                if (category === 'Savings Allocation') return 'bg-indigo-100 text-indigo-800';
+                if (category === 'Savings Withdrawal') return 'bg-teal-100 text-teal-800';
+                return 'bg-gray-100 text-gray-800'; // Default for custom categories
+            };
+            
+            const updateDashboard = () => {
+                const periodKey = getCurrentPeriodKey();
+                const monthlyEntries = allEntries.filter(entry => entry.date.startsWith(periodKey));
+                const monthlyBudget = budgets[periodKey] || 0;
+                updateSummary(monthlyEntries, monthlyBudget);
+                renderCategoryChart(monthlyEntries);
+                renderTrendChart(monthlyEntries);
+            };
+            
+            const updateSummary = (entries, budget) => {
+                const totalExpenses = entries.filter(e => e.type === 'expense').reduce((sum, exp) => sum + exp.amount, 0);
+                const totalHabitExpenses = entries.filter(e => e.isHabit).reduce((sum, exp) => sum + exp.amount, 0);
+                const totalIncome = entries.filter(e => e.type === 'income').reduce((sum, inc) => sum + inc.amount, 0);
+                const remaining = budget - totalExpenses;
+                const balance = totalIncome - totalExpenses;
+                
+                document.getElementById('total-expenses').textContent = formatCurrency(totalExpenses);
+                document.getElementById('total-habit-expenses').textContent = formatCurrency(totalHabitExpenses);
+                document.getElementById('total-income').textContent = formatCurrency(totalIncome);
+                document.getElementById('monthly-budget').textContent = formatCurrency(budget);
+                document.getElementById('remaining-budget').textContent = formatCurrency(remaining);
+                document.getElementById('net-balance').textContent = formatCurrency(balance);
+                
+                document.getElementById('remaining-budget').style.color = remaining < 0 ? 'var(--danger-accent)' : 'var(--success-accent)';
+                document.getElementById('net-balance').style.color = balance < 0 ? 'var(--danger-accent)' : 'var(--success-accent)';
+                document.getElementById('budget-warning').classList.toggle('hidden', !(budget > 0 && totalExpenses > budget));
+            };
+
+            const renderTable = (entries) => {
+                let filteredEntries = [...entries];
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                // Filter by date range
+                if (currentLogFilter === 'today') filteredEntries = entries.filter(entry => new Date(entry.date + 'T00:00:00').getTime() === today.getTime());
+                else if (currentLogFilter === 'yesterday') { const y = new Date(today); y.setDate(today.getDate() - 1); filteredEntries = entries.filter(entry => new Date(entry.date + 'T00:00:00').getTime() === y.getTime()); } 
+                else if (currentLogFilter === 'last7days') { const s = new Date(today); s.setDate(today.getDate() - 6); filteredEntries = entries.filter(entry => new Date(entry.date + 'T00:00:00') >= s); } 
+                else if (currentLogFilter === 'expenses') filteredEntries = entries.filter(entry => entry.type === 'expense');
+                else if (currentLogFilter === 'income') filteredEntries = entries.filter(entry => entry.type === 'income');
+
+                // Filter by search term
+                const searchTerm = logSearchInput.value.toLowerCase();
+                if (searchTerm) {
+                    filteredEntries = filteredEntries.filter(entry => entry.description.toLowerCase().includes(searchTerm));
+                }
+
+                filteredEntries.sort((a, b) => new Date(b.date) - new Date(a.date));
+                expenseTableBody.innerHTML = filteredEntries.length === 0 ? `<tr><td colspan="6" class="px-6 py-12 text-center" style="color: var(--text-secondary);">No entries found.</td></tr>` : '';
+                
+                filteredEntries.forEach(entry => {
+                    const isIncome = entry.type === 'income';
+                    const row = document.createElement('tr');
+                    row.innerHTML = `<td class="px-6 py-4 whitespace-nowrap text-sm">${formatDate(entry.date)}</td><td class="px-6 py-4 whitespace-nowrap text-sm"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${isIncome ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'}">${isIncome ? 'Income' : 'Expense'}</span></td><td class="px-6 py-4 whitespace-nowrap text-sm"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getCategoryClass(entry.category, entry.isHabit)}">${escapeHTML(entry.category)}</span></td><td class="px-6 py-4 whitespace-nowrap text-sm">${escapeHTML(entry.description)}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-right font-medium" style="color:${isIncome ? 'var(--success-accent)' : 'var(--danger-accent)'}">${formatCurrency(entry.amount)}</td><td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium"><button data-id="${entry.id}" class="edit-btn font-semibold mr-3" style="color:var(--primary-accent);">Edit</button><button data-id="${entry.id}" class="delete-btn font-semibold" style="color:var(--danger-accent);">Delete</button></td>`;
+                    expenseTableBody.appendChild(row);
+                });
+            };
+            
+            const renderCategoryChart = (entries) => {
+                const ctx = document.getElementById('category-chart').getContext('2d');
+                const expenseEntries = entries.filter(e => e.type === 'expense');
+                const categoryTotals = expenseEntries.reduce((acc, exp) => { acc[exp.category] = (acc[exp.category] || 0) + exp.amount; return acc; }, {});
+                if (categoryChart) categoryChart.destroy();
+                categoryChart = new Chart(ctx, { type: 'doughnut', data: { labels: Object.keys(categoryTotals), datasets: [{ data: Object.values(categoryTotals), backgroundColor: ['#ef4444', '#f97316', '#eab308', '#84cc16', '#22c55e', '#14b8a6', '#06b6d4', '#3b82f6', '#8b5cf6', '#d946ef', '#6366f1'], borderWidth: 1 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: 'var(--text-secondary)'} } } } });
+            };
+
+            const renderTrendChart = (entries) => {
+                const ctx = document.getElementById('trend-chart').getContext('2d');
+                const daysInMonth = new Date(yearSelect.value, parseInt(monthSelect.value) + 1, 0).getDate();
+                const dailyTotals = Array(daysInMonth).fill(0);
+                entries.filter(e => e.type === 'expense').forEach(exp => { const day = new Date(exp.date + 'T00:00:00').getDate() - 1; if (day >= 0 && day < daysInMonth) dailyTotals[day] += exp.amount; });
+                
+                const computedStyle = getComputedStyle(document.documentElement);
+                const primaryColor = computedStyle.getPropertyValue('--primary-accent').trim();
+
+                if (trendChart) trendChart.destroy();
+                trendChart = new Chart(ctx, { type: 'line', data: { labels: Array.from({ length: daysInMonth }, (_, i) => i + 1), datasets: [{ label: 'Daily Spending', data: dailyTotals, fill: false, borderColor: primaryColor, tension: 0.1 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: {color: 'var(--text-secondary)'} }, x: { ticks: {color: 'var(--text-secondary)'} } }, plugins: { legend: { labels: {color: 'var(--text-secondary)'}}} } });
+            };
+
+            const addEntry = (e) => {
+                e.preventDefault();
+                const formId = e.target.id;
+                let newEntry;
+                if (formId === 'income-form') newEntry = { id: Date.now(), type: 'income', date: e.target['income-date'].value, category: e.target['income-category'].value, description: e.target['income-description'].value, amount: parseFloat(e.target['income-amount'].value) };
+                else { const isHabit = formId === 'habit-form'; newEntry = { id: Date.now(), type: 'expense', date: e.target[isHabit ? 'habit-date' : 'date'].value, category: isHabit ? 'Habit' : e.target.category.value, description: e.target[isHabit ? 'habit-description' : 'description'].value, amount: parseFloat(e.target[isHabit ? 'habit-amount' : 'amount'].value), isHabit }; }
+                allEntries.push(newEntry);
+                localStorage.setItem('allEntries', JSON.stringify(allEntries));
+                
+                updateDashboard();
+                if(!tabs.log.view.classList.contains('hidden')) renderTable(allEntries);
+                showToast(formId.includes('income') ? 'Income added!' : 'Expense added!', 'success');
+                e.target.reset();
+                document.querySelectorAll('input[type="date"]').forEach(input => input.valueAsDate = new Date());
+            };
+
+            const deleteEntry = (id) => {
+                const entryToDelete = allEntries.find(e => e.id === id);
+                if (entryToDelete && entryToDelete.goalId) {
+                    const goal = savingsGoals.find(g => g.id === entryToDelete.goalId);
+                    if (goal) {
+                        if (entryToDelete.category === 'Savings Allocation') {
+                            goal.currentAmount = Math.max(0, (goal.currentAmount || 0) - entryToDelete.amount);
+                        } else if (entryToDelete.category === 'Savings Withdrawal') {
+                            goal.currentAmount = (goal.currentAmount || 0) + entryToDelete.amount;
+                        }
+                    }
+                    saveSavingsGoals();
+                }
+                allEntries = allEntries.filter(entry => entry.id !== id);
+                localStorage.setItem('allEntries', JSON.stringify(allEntries));
+                updateDashboard();
+                renderTable(allEntries);
+                renderSavingsGoals();
+            };
+            
+            const openEditModal = (id) => {
+                const entry = allEntries.find(e => e.id === id);
+                if (!entry) return;
+
+                document.getElementById('edit-entry-id').value = entry.id;
+                document.getElementById('edit-date').value = entry.date;
+                document.getElementById('edit-description').value = entry.description;
+                document.getElementById('edit-amount').value = entry.amount;
+
+                const categorySelect = document.getElementById('edit-category');
+                const categories = entry.type === 'income' ? incomeCategories : expenseCategories;
+                categorySelect.innerHTML = '';
+                categories.forEach(cat => {
                     const option = document.createElement('option');
                     option.value = cat;
                     option.textContent = cat;
-                    selectEl.appendChild(option);
+                    if (cat === entry.category) {
+                        option.selected = true;
+                    }
+                    categorySelect.appendChild(option);
                 });
-            }
-             populateRecurringCategorySelect();
-        };
-        
-        // --- Profile Functions ---
-        const loadProfileData = () => {
-            profileData = JSON.parse(localStorage.getItem('profileData')) || { name: '', avatar: '' };
-            userNameInput.value = profileData.name;
-            const a = profileData.avatar || 'https://placehold.co/100x100/E2E8F0/4A5568?text=User';
-            headerAvatar.src = a;
-            avatarPreview.src = a;
-        };
-        const saveProfileData = (e) => { e.preventDefault(); profileData.name = userNameInput.value; localStorage.setItem('profileData', JSON.stringify(profileData)); showToast('Profile saved!', 'success'); };
-        
-        // --- Settings and Log Filter ---
-        const setLogFilter = (f) => { currentLogFilter = f; document.querySelectorAll('#log-filters .log-filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === f)); renderTable(allEntries); };
-        const applySettings = () => { document.documentElement.setAttribute('data-theme', settings.theme); updateDashboard(); };
-        const loadSettings = () => { const s = JSON.parse(localStorage.getItem('settings')); if (s) settings = { ...settings, ...s }; themeSelect.value = settings.theme; currencySymbolInput.value = settings.currencySymbol; applySettings(); };
-        const saveSettings = () => { settings.theme = themeSelect.value; settings.currencySymbol = currencySymbolInput.value || '৳'; localStorage.setItem('settings', JSON.stringify(settings)); applySettings(); showToast('Settings saved!', 'info'); };
 
-        const exportData = () => {
-            const dataToExport = { allEntries, budgets, profileData, settings, savingsGoals, recurringTransactions, expenseCategories, incomeCategories };
-            const dataStr = JSON.stringify(dataToExport, null, 2);
-            const blob = new Blob([dataStr], { type: "application/json" }); const url = URL.createObjectURL(blob);
-            const a = document.createElement('a'); a.href = url; a.download = `budget-data-backup-${new Date().toISOString().split('T')[0]}.json`;
-            document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
-            showToast('Data exported successfully!', 'info');
-        };
-        
-        const importData = (event) => {
-            const file = event.target.files[0]; if (!file) return; const reader = new FileReader();
-            reader.onload = (e) => {
-                if (confirm('Importing will overwrite all current data. Continue?')) {
-                    try {
-                        const i = JSON.parse(e.target.result);
-                        localStorage.setItem('allEntries', JSON.stringify(i.allEntries || []));
-                        localStorage.setItem('budgets', JSON.stringify(i.budgets || {}));
-                        localStorage.setItem('profileData', JSON.stringify(i.profileData || {}));
-                        localStorage.setItem('settings', JSON.stringify(i.settings || {}));
-                        localStorage.setItem('savingsGoals', JSON.stringify(i.savingsGoals || []));
-                        localStorage.setItem('recurringTransactions', JSON.stringify(i.recurringTransactions || []));
-                        localStorage.setItem('expenseCategories', JSON.stringify(i.expenseCategories || []));
-                        localStorage.setItem('incomeCategories', JSON.stringify(i.incomeCategories || []));
-                        showToast('Data imported successfully! The page will reload.', 'success'); setTimeout(() => location.reload(), 2000);
-                    } catch (error) { showToast('Error: Invalid file format.', 'error'); }
+                toggleModal(editModal, true);
+            };
+
+            const handleEditSubmit = (e) => {
+                e.preventDefault();
+                const id = parseInt(document.getElementById('edit-entry-id').value, 10);
+                const entry = allEntries.find(e => e.id === id);
+                if (entry) {
+                    entry.date = document.getElementById('edit-date').value;
+                    entry.description = document.getElementById('edit-description').value;
+                    entry.category = document.getElementById('edit-category').value;
+                    entry.amount = parseFloat(document.getElementById('edit-amount').value);
+                    
+                    localStorage.setItem('allEntries', JSON.stringify(allEntries));
+                    updateDashboard();
+                    renderTable(allEntries);
+                    toggleModal(editModal, false);
+                    showToast('Transaction updated successfully!', 'success');
+                } else {
+                    showToast('Error: Could not find transaction to update.', 'error');
                 }
             };
-            reader.readAsText(file); event.target.value = '';
+
+
+            // --- Reports Functions ---
+            const renderReports = () => {
+                renderMonthlyComparisonChart();
+                populateCategorySelectForDeepDive();
+                renderCategoryDeepDiveChart();
+            };
+
+            const renderMonthlyComparisonChart = () => {
+                const ctx = document.getElementById('monthly-comparison-chart').getContext('2d');
+                const labels = [];
+                const incomeData = [];
+                const expenseData = [];
+                const today = new Date();
+
+                for (let i = 5; i >= 0; i--) {
+                    const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
+                    const year = d.getFullYear();
+                    const month = d.getMonth() + 1;
+                    const monthKey = `${year}-${String(month).padStart(2, '0')}`;
+                    
+                    labels.push(d.toLocaleString('default', { month: 'short', year: 'numeric' }));
+                    
+                    const monthlyEntries = allEntries.filter(e => e.date.startsWith(monthKey));
+                    incomeData.push(monthlyEntries.filter(e => e.type === 'income').reduce((sum, e) => sum + e.amount, 0));
+                    expenseData.push(monthlyEntries.filter(e => e.type === 'expense').reduce((sum, e) => sum + e.amount, 0));
+                }
+
+                const computedStyle = getComputedStyle(document.documentElement);
+                const successColor = computedStyle.getPropertyValue('--success-accent').trim();
+                const dangerColor = computedStyle.getPropertyValue('--danger-accent').trim();
+
+                if (monthlyComparisonChart) monthlyComparisonChart.destroy();
+                monthlyComparisonChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels,
+                        datasets: [
+                            { label: 'Income', data: incomeData, backgroundColor: successColor },
+                            { label: 'Expenses', data: expenseData, backgroundColor: dangerColor }
+                        ]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { color: 'var(--text-secondary)' } }, x: { ticks: { color: 'var(--text-secondary)' } } }, plugins: { legend: { labels: { color: 'var(--text-secondary)' } } } }
+                });
+            };
+            
+            const populateCategorySelectForDeepDive = () => {
+                const categories = [...new Set(allEntries.filter(e => e.type === 'expense').map(e => e.category))];
+                categoryDeepDiveSelect.innerHTML = categories.length === 0 ? '<option>No categories yet</option>' : '';
+                categories.forEach(cat => {
+                    const option = document.createElement('option');
+                    option.value = cat;
+                    option.textContent = cat;
+                    categoryDeepDiveSelect.appendChild(option);
+                });
+            };
+
+            const renderCategoryDeepDiveChart = () => {
+                const ctx = document.getElementById('category-deep-dive-chart').getContext('2d');
+                const selectedCategory = categoryDeepDiveSelect.value;
+                let labels = [], spendingData = [], chartLabel = '';
+
+                if (categoryTrendView === 'monthly') {
+                    chartLabel = `${selectedCategory} Spending (Monthly)`;
+                    const today = new Date();
+                    for (let i = 5; i >= 0; i--) {
+                        const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
+                        const monthKey = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+                        labels.push(d.toLocaleString('default', { month: 'short' }));
+                        const categorySpending = allEntries.filter(e => e.date.startsWith(monthKey) && e.type === 'expense' && e.category === selectedCategory).reduce((sum, e) => sum + e.amount, 0);
+                        spendingData.push(categorySpending);
+                    }
+                } else { // Daily view
+                    const selectedYear = parseInt(yearSelect.value, 10), selectedMonth = parseInt(monthSelect.value, 10);
+                    chartLabel = `${selectedCategory} Spending (Daily for ${monthSelect.options[monthSelect.selectedIndex].text} ${selectedYear})`;
+                    const daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
+                    labels = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+                    spendingData = Array(daysInMonth).fill(0);
+                    
+                    const relevantEntries = allEntries.filter(e => { const d = new Date(e.date + 'T00:00:00'); return e.type === 'expense' && e.category === selectedCategory && d.getFullYear() === selectedYear && d.getMonth() === selectedMonth; });
+                    relevantEntries.forEach(entry => { const day = new Date(entry.date + 'T00:00:00').getDate() - 1; spendingData[day] += entry.amount; });
+                }
+
+                const computedStyle = getComputedStyle(document.documentElement);
+                const primaryColor = computedStyle.getPropertyValue('--primary-accent').trim();
+
+                if (categoryDeepDiveChart) categoryDeepDiveChart.destroy();
+                categoryDeepDiveChart = new Chart(ctx, { type: 'line', data: { labels, datasets: [{ label: chartLabel, data: spendingData, borderColor: primaryColor, tension: 0.1, fill: false }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { color: 'var(--text-secondary)' } }, x: { ticks: { color: 'var(--text-secondary)' } } }, plugins: { legend: { labels: { color: 'var(--text-secondary)' } } } } });
+            };
+
+
+            // --- Recurring Transactions Functions ---
+            const renderRecurringTransactions = () => {
+                recurringTransactionsContainer.innerHTML = recurringTransactions.length === 0 ? `<p style="color: var(--text-secondary);">No recurring transactions set up.</p>` : '';
+                recurringTransactions.forEach(item => {
+                    const itemEl = document.createElement('div');
+                    itemEl.className = 'p-3 rounded-md flex justify-between items-center text-white';
+                    itemEl.style.backgroundColor = item.type === 'income' ? 'var(--success-accent)' : 'var(--danger-accent)';
+                    itemEl.innerHTML = `<div><p class="font-bold">${escapeHTML(item.description)} - ${formatCurrency(item.amount)}</p><p class="text-sm opacity-90">${item.frequency.charAt(0).toUpperCase() + item.frequency.slice(1)} starting ${formatDate(item.startDate)}</p></div><button data-id="${item.id}" class="delete-recurring-btn font-bold text-lg">&times;</button>`;
+                    recurringTransactionsContainer.appendChild(itemEl);
+                });
+            };
+
+            const addRecurringTransaction = (e) => {
+                e.preventDefault();
+                const form = recurringTransactionForm.elements;
+                const newRecurring = { id: Date.now(), type: form['recurring-type'].value, description: form['recurring-description'].value, amount: parseFloat(form['recurring-amount'].value), category: form['recurring-category'].value, frequency: form['recurring-frequency'].value, startDate: form['recurring-start-date'].value, lastProcessedDate: null };
+                recurringTransactions.push(newRecurring);
+                saveRecurringTransactions(); renderRecurringTransactions();
+                showToast('Recurring transaction added!', 'success');
+                recurringTransactionForm.reset(); document.getElementById('recurring-start-date').valueAsDate = new Date();
+            };
+
+            const deleteRecurringTransaction = (id) => { recurringTransactions = recurringTransactions.filter(item => item.id !== id); saveRecurringTransactions(); renderRecurringTransactions(); showToast('Recurring transaction removed.', 'info'); };
+            
+            const processRecurringTransactions = () => {
+                const today = new Date(); today.setHours(0, 0, 0, 0); let newEntriesMade = false;
+                recurringTransactions.forEach(item => {
+                    let nextDueDate = new Date(item.startDate + 'T00:00:00');
+                    const lastProcessed = item.lastProcessedDate ? new Date(item.lastProcessedDate + 'T00:00:00') : null;
+                    if (lastProcessed) {
+                        nextDueDate = new Date(lastProcessed);
+                        if (item.frequency === 'weekly') nextDueDate.setDate(nextDueDate.getDate() + 7);
+                        else if (item.frequency === 'monthly') nextDueDate.setMonth(nextDueDate.getMonth() + 1);
+                        else if (item.frequency === 'yearly') nextDueDate.setFullYear(nextDueDate.getFullYear() + 1);
+                    }
+                    while (nextDueDate <= today) {
+                        const dateStr = nextDueDate.toISOString().split('T')[0];
+                        if (!allEntries.some(e => e.recurringId === item.id && e.date === dateStr)) {
+                            allEntries.push({ id: Date.now() + Math.random(), recurringId: item.id, type: item.type, date: dateStr, category: item.category, description: item.description, amount: item.amount, isHabit: false });
+                            newEntriesMade = true;
+                        }
+                        item.lastProcessedDate = dateStr;
+                        if (item.frequency === 'weekly') nextDueDate.setDate(nextDueDate.getDate() + 7);
+                        else if (item.frequency === 'monthly') nextDueDate.setMonth(nextDueDate.getMonth() + 1);
+                        else if (item.frequency === 'yearly') nextDueDate.setFullYear(nextDueDate.getFullYear() + 1);
+                    }
+                });
+                if (newEntriesMade) { localStorage.setItem('allEntries', JSON.stringify(allEntries)); saveRecurringTransactions(); showToast('Recurring transactions processed.', 'info'); }
+            };
+
+            const loadRecurringTransactions = () => { recurringTransactions = JSON.parse(localStorage.getItem('recurringTransactions')) || []; renderRecurringTransactions(); };
+            const saveRecurringTransactions = () => localStorage.setItem('recurringTransactions', JSON.stringify(recurringTransactions));
+            
+            const populateRecurringCategorySelect = () => {
+                const type = recurringTypeSelect.value;
+                const options = type === 'expense' ? expenseCategories : incomeCategories;
+                recurringCategorySelect.innerHTML = '';
+                options.forEach(opt => { const option = document.createElement('option'); option.value = opt; option.textContent = opt; recurringCategorySelect.appendChild(option); });
+            };
+
+            // --- Savings Goals Functions ---
+            const renderSavingsGoals = () => {
+                savingsGoalsContainer.innerHTML = savingsGoals.length === 0 ? `<p style="color: var(--text-secondary);">No savings goals set.</p>` : '';
+                savingsGoals.forEach(goal => {
+                    const currentAmount = goal.currentAmount || 0;
+                    const progress = Math.max(0, Math.min(100, (currentAmount / goal.targetAmount) * 100));
+                    const goalEl = document.createElement('div'); goalEl.className = 'border-b pb-4'; goalEl.style.borderColor = 'var(--border-color)';
+                    goalEl.innerHTML = `
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="font-semibold">${escapeHTML(goal.name)}</span>
+                            <span class="text-sm font-medium" style="color: var(--text-secondary);">${formatCurrency(currentAmount)} / ${formatCurrency(goal.targetAmount)}</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-4 dark:bg-gray-700">
+                            <div class="h-4 rounded-full" style="width: ${progress}%; background-color: var(--success-accent);"></div>
+                        </div>
+                        <div class="flex justify-between items-center mt-2">
+                            <span class="text-sm font-medium" style="color: var(--primary-accent);">${progress.toFixed(1)}% Complete</span>
+                            <div class="flex gap-2">
+                                <button data-id="${goal.id}" data-action="withdraw" class="funds-btn text-xs font-semibold py-1 px-2 rounded" style="color: var(--danger-accent); border: 1px solid currentColor;">Withdraw</button>
+                                <button data-id="${goal.id}" data-action="add" class="funds-btn text-xs font-semibold py-1 px-2 rounded" style="color: var(--success-accent); border: 1px solid currentColor;">Add Funds</button>
+                                <button data-id="${goal.id}" class="delete-goal-btn text-xs font-semibold py-1 px-2" style="color: var(--danger-accent);">&times;</button>
+                            </div>
+                        </div>`;
+                    savingsGoalsContainer.appendChild(goalEl);
+                });
+            };
+
+            const addSavingsGoal = (e) => { e.preventDefault(); const n = document.getElementById('goal-name-input').value; const a = parseFloat(document.getElementById('goal-amount-input').value); if (n && a > 0) { savingsGoals.push({ id: Date.now(), name:n, targetAmount: a, currentAmount: 0 }); saveSavingsGoals(); renderSavingsGoals(); showToast('Savings goal added!', 'success'); savingsGoalForm.reset(); } };
+            const deleteSavingsGoal = (id) => { savingsGoals = savingsGoals.filter(goal => goal.id !== id); saveSavingsGoals(); renderSavingsGoals(); showToast('Savings goal removed.', 'info'); };
+            
+            const handleFunds = (e) => {
+                e.preventDefault();
+                const goalId = parseInt(fundsForm.elements['goal-id-input'].value, 10);
+                const amount = parseFloat(fundsForm.elements['funds-amount-input'].value);
+                const action = fundsForm.elements['funds-action-input'].value;
+                const goal = savingsGoals.find(g => g.id === goalId);
+
+                if (!goal || !amount > 0) return;
+                
+                let newEntry;
+                if (action === 'add') {
+                    goal.currentAmount = (goal.currentAmount || 0) + amount;
+                    newEntry = { id: Date.now(), type: 'expense', date: new Date().toISOString().split('T')[0], category: 'Savings Allocation', description: `Contribution to "${goal.name}"`, amount, isHabit: false, goalId, isSavings: true };
+                } else { // withdraw
+                    if (amount > goal.currentAmount) {
+                        showToast('Withdrawal cannot exceed current saved amount.', 'error');
+                        return;
+                    }
+                    goal.currentAmount -= amount;
+                    newEntry = { id: Date.now(), type: 'income', date: new Date().toISOString().split('T')[0], category: 'Savings Withdrawal', description: `Withdrawal from "${goal.name}"`, amount, isHabit: false, goalId, isSavings: true };
+                }
+
+                allEntries.push(newEntry);
+                saveSavingsGoals();
+                localStorage.setItem('allEntries', JSON.stringify(allEntries));
+                renderSavingsGoals();
+                updateDashboard();
+                showToast(`Transaction successful!`, 'success');
+                toggleModal(fundsModal, false);
+            };
+
+
+            const loadSavingsGoals = () => { savingsGoals = JSON.parse(localStorage.getItem('savingsGoals')) || []; renderSavingsGoals(); };
+            const saveSavingsGoals = () => localStorage.setItem('savingsGoals', JSON.stringify(savingsGoals));
+
+            // --- Modal Functions ---
+            const toggleModal = (modal, show) => { const c = modal.querySelector('.modal-content'); if (show) { modal.classList.remove('hidden'); setTimeout(() => { modal.classList.remove('opacity-0'); c.classList.remove('scale-95'); }, 10); } else { modal.classList.add('opacity-0'); c.classList.add('scale-95'); setTimeout(() => modal.classList.add('hidden'), 300); } };
+            const openDeleteConfirmation = (id) => { entryToDeleteId = id; const e = allEntries.find(i => i.id === id); if (e) { document.getElementById('entry-to-delete-details').innerHTML = `<strong>${escapeHTML(e.category)}:</strong> ${escapeHTML(e.description)} - ${formatCurrency(e.amount)}`; toggleModal(confirmModal, true); } };
+            
+            // --- Category Management ---
+            const renderCategories = () => {
+                expenseCategoriesList.innerHTML = '';
+                expenseCategories.forEach(cat => {
+                    const el = document.createElement('div');
+                    el.className = 'flex justify-between items-center p-2 rounded-md bg-gray-500/10';
+                    el.innerHTML = `<span>${escapeHTML(cat)}</span><button data-category="${escapeHTML(cat)}" class="delete-expense-category-btn text-red-500 font-bold">&times;</button>`;
+                    expenseCategoriesList.appendChild(el);
+                });
+
+                incomeCategoriesList.innerHTML = '';
+                incomeCategories.forEach(cat => {
+                    const el = document.createElement('div');
+                    el.className = 'flex justify-between items-center p-2 rounded-md bg-gray-500/10';
+                    el.innerHTML = `<span>${escapeHTML(cat)}</span><button data-category="${escapeHTML(cat)}" class="delete-income-category-btn text-red-500 font-bold">&times;</button>`;
+                    incomeCategoriesList.appendChild(el);
+                });
+                populateAllCategorySelects();
+            };
+
+            const addCategory = (type, e) => {
+                e.preventDefault();
+                const input = document.getElementById(`new-${type}-category-input`);
+                const categoryName = input.value.trim();
+                if (!categoryName) return;
+
+                const list = type === 'expense' ? expenseCategories : incomeCategories;
+                if (list.includes(categoryName)) {
+                    showToast('Category already exists.', 'error');
+                    return;
+                }
+                list.push(categoryName);
+                saveCategories();
+                renderCategories();
+                input.value = '';
+            };
+
+            const deleteCategory = (type, categoryName) => {
+                if (allEntries.some(e => e.category === categoryName)) {
+                    showToast('Cannot delete category as it is used in some transactions.', 'error');
+                    return;
+                }
+                if (type === 'expense') {
+                    expenseCategories = expenseCategories.filter(c => c !== categoryName);
+                } else {
+                    incomeCategories = incomeCategories.filter(c => c !== categoryName);
+                }
+                saveCategories();
+                renderCategories();
+            };
+
+            const loadCategories = () => {
+                expenseCategories = JSON.parse(localStorage.getItem('expenseCategories')) || ['Food', 'Grocery', 'Transport', 'Utilities', 'Entertainment', 'Health', 'Shopping', 'Other'];
+                incomeCategories = JSON.parse(localStorage.getItem('incomeCategories')) || ['Salary', 'Freelance', 'Gift', 'Investment', 'Other'];
+                renderCategories();
+            };
+            const saveCategories = () => {
+                localStorage.setItem('expenseCategories', JSON.stringify(expenseCategories));
+                localStorage.setItem('incomeCategories', JSON.stringify(incomeCategories));
+            };
+
+            const populateAllCategorySelects = () => {
+                const selects = {
+                    'category': expenseCategories,
+                    'income-category': incomeCategories,
+                };
+                for (const [id, cats] of Object.entries(selects)) {
+                    const selectEl = document.getElementById(id);
+                    selectEl.innerHTML = '';
+                    cats.forEach(cat => {
+                        const option = document.createElement('option');
+                        option.value = cat;
+                        option.textContent = cat;
+                        selectEl.appendChild(option);
+                    });
+                }
+                populateRecurringCategorySelect();
+            };
+            
+            // --- Profile Functions ---
+            const loadProfileData = () => {
+                profileData = JSON.parse(localStorage.getItem('profileData')) || { name: '', avatar: '' };
+                userNameInput.value = profileData.name;
+                const a = profileData.avatar || 'https://placehold.co/100x100/E2E8F0/4A5568?text=User';
+                headerAvatar.src = a;
+                avatarPreview.src = a;
+            };
+            const saveProfileData = (e) => { e.preventDefault(); profileData.name = userNameInput.value; localStorage.setItem('profileData', JSON.stringify(profileData)); showToast('Profile saved!', 'success'); };
+            
+            // --- Settings and Log Filter ---
+            const setLogFilter = (f) => { currentLogFilter = f; document.querySelectorAll('#log-filters .log-filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === f)); renderTable(allEntries); };
+            const applySettings = () => { document.documentElement.setAttribute('data-theme', settings.theme); updateDashboard(); };
+            const loadSettings = () => { const s = JSON.parse(localStorage.getItem('settings')); if (s) settings = { ...settings, ...s }; themeSelect.value = settings.theme; currencySymbolInput.value = settings.currencySymbol; applySettings(); };
+            const saveSettings = () => { settings.theme = themeSelect.value; settings.currencySymbol = currencySymbolInput.value || '৳'; localStorage.setItem('settings', JSON.stringify(settings)); applySettings(); showToast('Settings saved!', 'info'); };
+
+            const exportData = () => {
+                const dataToExport = { allEntries, budgets, profileData, settings, savingsGoals, recurringTransactions, expenseCategories, incomeCategories };
+                const dataStr = JSON.stringify(dataToExport, null, 2);
+                const blob = new Blob([dataStr], { type: "application/json" }); const url = URL.createObjectURL(blob);
+                const a = document.createElement('a'); a.href = url; a.download = `budget-data-backup-${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+                showToast('Data exported successfully!', 'info');
+            };
+            
+            const importData = (event) => {
+                const file = event.target.files[0]; if (!file) return; const reader = new FileReader();
+                reader.onload = (e) => {
+                    if (confirm('Importing will overwrite all current data. Continue?')) {
+                        try {
+                            const i = JSON.parse(e.target.result);
+                            localStorage.setItem('allEntries', JSON.stringify(i.allEntries || []));
+                            localStorage.setItem('budgets', JSON.stringify(i.budgets || {}));
+                            localStorage.setItem('profileData', JSON.stringify(i.profileData || {}));
+                            localStorage.setItem('settings', JSON.stringify(i.settings || {}));
+                            localStorage.setItem('savingsGoals', JSON.stringify(i.savingsGoals || []));
+                            localStorage.setItem('recurringTransactions', JSON.stringify(i.recurringTransactions || []));
+                            localStorage.setItem('expenseCategories', JSON.stringify(i.expenseCategories || []));
+                            localStorage.setItem('incomeCategories', JSON.stringify(i.incomeCategories || []));
+                            showToast('Data imported successfully! The page will reload.', 'success'); setTimeout(() => location.reload(), 2000);
+                        } catch (error) { showToast('Error: Invalid file format.', 'error'); }
+                    }
+                };
+                reader.readAsText(file); event.target.value = '';
+            };
+
+            const clearAllData = () => { if (prompt('This action is irreversible. To confirm, type "DELETE" below:') === 'DELETE') { localStorage.clear(); showToast('All data cleared. The page will reload.', 'success'); setTimeout(() => location.reload(), 2000); } };
+
+            // --- Event Listeners ---
+            Object.values(tabs).forEach(t => { if(t.btn) t.btn.addEventListener('click', () => switchTab(Object.keys(tabs).find(k => tabs[k].btn === t.btn))) });
+            profileIconHeader.addEventListener('click', () => { switchTab('settings'); switchSettingsSection('profile'); });
+            monthSelect.addEventListener('change', updateDashboard);
+            yearSelect.addEventListener('change', updateDashboard);
+            expenseForm.addEventListener('submit', addEntry); incomeForm.addEventListener('submit', addEntry); habitForm.addEventListener('submit', addEntry);
+            expenseTableBody.addEventListener('click', (e) => { 
+                if (e.target.classList.contains('delete-btn')) openDeleteConfirmation(parseInt(e.target.dataset.id, 10)); 
+                if (e.target.classList.contains('edit-btn')) openEditModal(parseInt(e.target.dataset.id, 10)); 
+            });
+            editForm.addEventListener('submit', handleEditSubmit);
+            cancelEditBtn.addEventListener('click', () => toggleModal(editModal, false));
+            logFilters.addEventListener('click', (e) => { if(e.target.classList.contains('log-filter-btn')) setLogFilter(e.target.dataset.filter); });
+            logSearchInput.addEventListener('input', () => renderTable(allEntries));
+            // Reports
+            categoryDeepDiveSelect.addEventListener('change', renderCategoryDeepDiveChart);
+            categoryTrendViewToggle.addEventListener('click', (e) => { if (e.target.tagName === 'BUTTON') { const newView = e.target.dataset.view; if (newView !== categoryTrendView) { categoryTrendView = newView; document.querySelectorAll('.category-trend-view-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.view === newView)); renderCategoryDeepDiveChart(); } } });
+            // Recurring
+            recurringTransactionForm.addEventListener('submit', addRecurringTransaction);
+            recurringTransactionsContainer.addEventListener('click', (e) => { if (e.target.classList.contains('delete-recurring-btn')) deleteRecurringTransaction(parseInt(e.target.dataset.id, 10)); });
+            recurringTypeSelect.addEventListener('change', populateRecurringCategorySelect);
+            // Savings
+            savingsGoalForm.addEventListener('submit', addSavingsGoal);
+            savingsGoalsContainer.addEventListener('click', (e) => { 
+                const target = e.target.closest('button');
+                if (!target) return;
+                const goalId = parseInt(target.dataset.id, 10);
+                if (target.classList.contains('delete-goal-btn')) {
+                    deleteSavingsGoal(goalId);
+                } else if (target.classList.contains('funds-btn')) {
+                    const action = target.dataset.action;
+                    document.getElementById('goal-id-input').value = goalId;
+                    document.getElementById('funds-action-input').value = action;
+                    document.getElementById('funds-modal-title').textContent = action === 'add' ? 'Add Funds to Goal' : 'Withdraw Funds from Goal';
+                    const submitBtn = document.getElementById('submit-funds-btn');
+                    submitBtn.textContent = action === 'add' ? 'Add' : 'Withdraw';
+                    submitBtn.style.backgroundColor = action === 'add' ? 'var(--success-accent)' : 'var(--danger-accent)';
+                    fundsForm.reset();
+                    toggleModal(fundsModal, true);
+                }
+            });
+            fundsForm.addEventListener('submit', handleFunds);
+            cancelFundsBtn.addEventListener('click', () => toggleModal(fundsModal, false));
+            // Budget Modal
+            setBudgetBtn.addEventListener('click', () => { budgetInput.value = budgets[getCurrentPeriodKey()] || ''; toggleModal(budgetModal, true); });
+            cancelBudgetBtn.addEventListener('click', () => toggleModal(budgetModal, false));
+            budgetForm.addEventListener('submit', (e) => { e.preventDefault(); budgets[getCurrentPeriodKey()] = parseFloat(budgetInput.value) || 0; localStorage.setItem('budgets', JSON.stringify(budgets)); updateDashboard(); toggleModal(budgetModal, false); });
+            // Confirm Modal
+            cancelDeleteBtn.addEventListener('click', () => toggleModal(confirmModal, false));
+            confirmDeleteBtn.addEventListener('click', () => { deleteEntry(entryToDeleteId); toggleModal(confirmModal, false); showToast('Entry deleted', 'info'); });
+            // Settings
+            const switchSettingsSection = (sectionName) => {
+                document.querySelectorAll('.settings-section').forEach(s => s.classList.add('hidden'));
+                document.getElementById(`settings-${sectionName}-section`).classList.remove('hidden');
+                document.querySelectorAll('.settings-menu-btn').forEach(b => b.classList.toggle('active', b.dataset.section === sectionName));
+            };
+            settingsMenu.addEventListener('click', e => { if (e.target.tagName === 'BUTTON') switchSettingsSection(e.target.dataset.section); });
+            profileForm.addEventListener('submit', saveProfileData);
+            uploadAvatarBtn.addEventListener('click', () => avatarUploadInput.click());
+            avatarUploadInput.addEventListener('change', (e) => { const f = e.target.files[0]; if (f) { const r = new FileReader(); r.onload = (ev) => { const d = ev.target.result; profileData.avatar = d; headerAvatar.src = d; avatarPreview.src = d; localStorage.setItem('profileData', JSON.stringify(profileData)); }; r.readAsDataURL(f); } });
+            themeSelect.addEventListener('change', saveSettings); currencySymbolInput.addEventListener('change', saveSettings);
+            exportDataBtn.addEventListener('click', exportData); importDataBtn.addEventListener('click', () => importFileInput.click()); importFileInput.addEventListener('change', importData); clearDataBtn.addEventListener('click', clearAllData);
+            addExpenseCategoryForm.addEventListener('submit', (e) => addCategory('expense', e));
+            addIncomeCategoryForm.addEventListener('submit', (e) => addCategory('income', e));
+            expenseCategoriesList.addEventListener('click', (e) => { if(e.target.classList.contains('delete-expense-category-btn')) deleteCategory('expense', e.target.dataset.category); });
+            incomeCategoriesList.addEventListener('click', (e) => { if(e.target.classList.contains('delete-income-category-btn')) deleteCategory('income', e.target.dataset.category); });
+
+            // --- Initial Load ---
+            const init = () => {
+                document.getElementById('copyright-year').textContent = new Date().getFullYear();
+                const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                const cY = new Date().getFullYear(); const cM = new Date().getMonth();
+                months.forEach((m, i) => { const o=new Option(m,i); if (i===cM) o.selected=true; monthSelect.add(o); });
+                for (let i = cY + 1; i >= cY - 5; i--) { const o=new Option(i,i); if (i===cY) o.selected=true; yearSelect.add(o); }
+                
+                allEntries = JSON.parse(localStorage.getItem('allEntries')) || [];
+                budgets = JSON.parse(localStorage.getItem('budgets')) || {};
+                
+                loadCategories();
+                loadRecurringTransactions();
+                processRecurringTransactions();
+                
+                loadSavingsGoals();
+                loadProfileData();
+                loadSettings();
+                
+                document.querySelectorAll('input[type="date"]').forEach(input => input.valueAsDate = new Date());
+                switchTab('dashboard');
+            };
+
+            init();
         };
 
-        const clearAllData = () => { if (prompt('This action is irreversible. To confirm, type "DELETE" below:') === 'DELETE') { localStorage.clear(); showToast('All data cleared. The page will reload.', 'success'); setTimeout(() => location.reload(), 2000); } };
-
-        // --- Event Listeners ---
-        Object.values(tabs).forEach(t => { if(t.btn) t.btn.addEventListener('click', () => switchTab(Object.keys(tabs).find(k => tabs[k].btn === t.btn))) });
-        profileIconHeader.addEventListener('click', () => { switchTab('settings'); switchSettingsSection('profile'); });
-        monthSelect.addEventListener('change', updateDashboard);
-        yearSelect.addEventListener('change', updateDashboard);
-        expenseForm.addEventListener('submit', addEntry); incomeForm.addEventListener('submit', addEntry); habitForm.addEventListener('submit', addEntry);
-        expenseTableBody.addEventListener('click', (e) => { if (e.target.classList.contains('delete-btn')) openDeleteConfirmation(parseInt(e.target.dataset.id, 10)); });
-        logFilters.addEventListener('click', (e) => { if(e.target.classList.contains('log-filter-btn')) setLogFilter(e.target.dataset.filter); });
-        logSearchInput.addEventListener('input', () => renderTable(allEntries));
-        // Reports
-        categoryDeepDiveSelect.addEventListener('change', renderCategoryDeepDiveChart);
-        categoryTrendViewToggle.addEventListener('click', (e) => { if (e.target.tagName === 'BUTTON') { const newView = e.target.dataset.view; if (newView !== categoryTrendView) { categoryTrendView = newView; document.querySelectorAll('.category-trend-view-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.view === newView)); renderCategoryDeepDiveChart(); } } });
-        // Recurring
-        recurringTransactionForm.addEventListener('submit', addRecurringTransaction);
-        recurringTransactionsContainer.addEventListener('click', (e) => { if (e.target.classList.contains('delete-recurring-btn')) deleteRecurringTransaction(parseInt(e.target.dataset.id, 10)); });
-        recurringTypeSelect.addEventListener('change', populateRecurringCategorySelect);
-        // Savings
-        savingsGoalForm.addEventListener('submit', addSavingsGoal);
-        savingsGoalsContainer.addEventListener('click', (e) => { 
-            const target = e.target.closest('button');
-            if (!target) return;
-            const goalId = parseInt(target.dataset.id, 10);
-            if (target.classList.contains('delete-goal-btn')) {
-                deleteSavingsGoal(goalId);
-            } else if (target.classList.contains('funds-btn')) {
-                const action = target.dataset.action;
-                document.getElementById('goal-id-input').value = goalId;
-                document.getElementById('funds-action-input').value = action;
-                document.getElementById('funds-modal-title').textContent = action === 'add' ? 'Add Funds to Goal' : 'Withdraw Funds from Goal';
-                const submitBtn = document.getElementById('submit-funds-btn');
-                submitBtn.textContent = action === 'add' ? 'Add' : 'Withdraw';
-                submitBtn.style.backgroundColor = action === 'add' ? 'var(--success-accent)' : 'var(--danger-accent)';
-                fundsForm.reset();
-                toggleModal(fundsModal, true);
+        const checkForChart = () => {
+            if (typeof Chart !== 'undefined') {
+                initializeApp();
+            } else {
+                setTimeout(checkForChart, 100);
             }
-        });
-        fundsForm.addEventListener('submit', handleFunds);
-        cancelFundsBtn.addEventListener('click', () => toggleModal(fundsModal, false));
-        // Budget Modal
-        setBudgetBtn.addEventListener('click', () => { budgetInput.value = budgets[getCurrentPeriodKey()] || ''; toggleModal(budgetModal, true); });
-        cancelBudgetBtn.addEventListener('click', () => toggleModal(budgetModal, false));
-        budgetForm.addEventListener('submit', (e) => { e.preventDefault(); budgets[getCurrentPeriodKey()] = parseFloat(budgetInput.value) || 0; localStorage.setItem('budgets', JSON.stringify(budgets)); updateDashboard(); toggleModal(budgetModal, false); });
-        // Confirm Modal
-        cancelDeleteBtn.addEventListener('click', () => toggleModal(confirmModal, false));
-        confirmDeleteBtn.addEventListener('click', () => { deleteEntry(entryToDeleteId); toggleModal(confirmModal, false); showToast('Entry deleted', 'info'); });
-        // Settings
-        const switchSettingsSection = (sectionName) => {
-            document.querySelectorAll('.settings-section').forEach(s => s.classList.add('hidden'));
-            document.getElementById(`settings-${sectionName}-section`).classList.remove('hidden');
-            document.querySelectorAll('.settings-menu-btn').forEach(b => b.classList.toggle('active', b.dataset.section === sectionName));
-        };
-        settingsMenu.addEventListener('click', e => { if (e.target.tagName === 'BUTTON') switchSettingsSection(e.target.dataset.section); });
-        profileForm.addEventListener('submit', saveProfileData);
-        uploadAvatarBtn.addEventListener('click', () => avatarUploadInput.click());
-        avatarUploadInput.addEventListener('change', (e) => { const f = e.target.files[0]; if (f) { const r = new FileReader(); r.onload = (ev) => { const d = ev.target.result; profileData.avatar = d; headerAvatar.src = d; avatarPreview.src = d; localStorage.setItem('profileData', JSON.stringify(profileData)); }; r.readAsDataURL(f); } });
-        themeSelect.addEventListener('change', saveSettings); currencySymbolInput.addEventListener('change', saveSettings);
-        exportDataBtn.addEventListener('click', exportData); importDataBtn.addEventListener('click', () => importFileInput.click()); importFileInput.addEventListener('change', importData); clearDataBtn.addEventListener('click', clearAllData);
-        addExpenseCategoryForm.addEventListener('submit', (e) => addCategory('expense', e));
-        addIncomeCategoryForm.addEventListener('submit', (e) => addCategory('income', e));
-        expenseCategoriesList.addEventListener('click', (e) => { if(e.target.classList.contains('delete-expense-category-btn')) deleteCategory('expense', e.target.dataset.category); });
-        incomeCategoriesList.addEventListener('click', (e) => { if(e.target.classList.contains('delete-income-category-btn')) deleteCategory('income', e.target.dataset.category); });
-
-        // --- Initial Load ---
-        const init = () => {
-            const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            const cY = new Date().getFullYear(); const cM = new Date().getMonth();
-            months.forEach((m, i) => { const o=new Option(m,i); if (i===cM) o.selected=true; monthSelect.add(o); });
-            for (let i = cY + 1; i >= cY - 5; i--) { const o=new Option(i,i); if (i===cY) o.selected=true; yearSelect.add(o); }
-            
-            allEntries = JSON.parse(localStorage.getItem('allEntries')) || [];
-            budgets = JSON.parse(localStorage.getItem('budgets')) || {};
-            
-            loadCategories();
-            loadRecurringTransactions();
-            processRecurringTransactions();
-            
-            loadSavingsGoals();
-            loadProfileData();
-            loadSettings();
-            
-            document.querySelectorAll('input[type="date"]').forEach(input => input.valueAsDate = new Date());
-            switchTab('dashboard');
         };
 
-        init();
+        checkForChart();
     });
     </script>
 </body>
