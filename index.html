@@ -383,6 +383,7 @@
                                <button data-section="categories" class="settings-menu-btn text-left p-2 rounded-md font-medium">Categories</button>
                                <button data-section="appearance" class="settings-menu-btn text-left p-2 rounded-md font-medium">Appearance</button>
                                <button data-section="data" class="settings-menu-btn text-left p-2 rounded-md font-medium">Data</button>
+                               <button data-section="about" class="settings-menu-btn text-left p-2 rounded-md font-medium">About</button>
                             </nav>
                         </div>
                         <div class="w-full md:w-3/4">
@@ -442,11 +443,22 @@
                                     <button type="submit" class="w-full text-white py-2 px-4 rounded-md shadow-sm transition mt-4" style="background-color: var(--primary-accent);">Save Appearance</button>
                                 </form>
                             </div>
-                             <!-- Data Section (Removed for Firestore version) -->
+                            <!-- Data Section -->
                             <div id="settings-data-section" class="settings-section hidden">
                                  <h3 class="text-xl font-semibold mb-4 border-b pb-2" style="border-color: var(--border-color);">Data Management</h3>
-                                 <p style="color: var(--text-secondary);">Your data is now securely stored in the cloud and is automatically backed up. There is no need for manual import/export.</p>
-                             </div>
+                                 <p class="mb-4" style="color: var(--text-secondary);">While your data is securely stored in the cloud, you can download a local backup of all your transactions and settings at any time.</p>
+                                 <button id="export-data-btn" class="w-full sm:w-auto text-white py-2 px-4 rounded-md shadow-sm transition" style="background-color: var(--primary-accent);">Export My Data</button>
+                            </div>
+                            <!-- About Section -->
+                            <div id="settings-about-section" class="settings-section hidden">
+                                 <h3 class="text-xl font-semibold mb-4 border-b pb-2" style="border-color: var(--border-color);">About Tailsmati</h3>
+                                 <div class="space-y-4" style="color: var(--text-secondary);">
+                                     <p>This expense tracker application was designed and developed by Sefat.</p>
+                                     <p>Company: Tailsmati</p>
+                                     <p>Contact: <a href="mailto:talismati.dev@gmail.com" class="underline" style="color: var(--primary-accent);">talismati.dev@gmail.com</a></p>
+                                     <p>Version: 1.0.0</p>
+                                 </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -625,6 +637,7 @@
             const savingsGoalsContainer = document.getElementById('savings-goals-container');
             const budgetModal = document.getElementById('budget-modal');
             const budgetForm = document.getElementById('budget-form');
+            const budgetInput = document.getElementById('budget-input');
             const cancelBudgetBtn = document.getElementById('cancel-budget-btn');
             const confirmModal = document.getElementById('confirm-modal');
             const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
@@ -647,6 +660,7 @@
             const avatarPreview = document.getElementById('profile-avatar-preview');
             const userNameDisplay = document.getElementById('user-name-display');
             const userEmailDisplay = document.getElementById('user-email-display');
+            const exportDataBtn = document.getElementById('export-data-btn');
 
             const tabs = {
                 dashboard: { btn: document.getElementById('dashboard-tab'), view: document.getElementById('dashboard-view') },
@@ -1063,6 +1077,28 @@
                 incomeCategoriesList.innerHTML = incomeCategories.map(cat => `<div class="flex justify-between items-center p-2 rounded-md bg-gray-500/10"><span>${escapeHTML(cat)}</span><button data-category="${escapeHTML(cat)}" class="delete-income-category-btn text-red-500 font-bold">&times;</button></div>`).join('');
                 populateAllCategorySelects();
             };
+             const exportData = () => {
+                const dataToExport = {
+                    allEntries,
+                    budgets,
+                    settings,
+                    savingsGoals,
+                    recurringTransactions,
+                    expenseCategories,
+                    incomeCategories
+                };
+                const dataStr = JSON.stringify(dataToExport, null, 2);
+                const blob = new Blob([dataStr], { type: "application/json" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `tailsmati-expense-data-${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                showToast('Data exported successfully!', 'info');
+            };
 
             // --- Firestore Listeners ---
             const setupAndListen = async () => {
@@ -1137,9 +1173,30 @@
 
             confirmDeleteBtn.addEventListener('click', () => { if (entryToDeleteId) { deleteEntry(entryToDeleteId); toggleModal(confirmModal, false); } });
             cancelDeleteBtn.addEventListener('click', () => toggleModal(confirmModal, false));
-            setBudgetBtn.addEventListener('click', () => { budgetInput.value = budgets[getCurrentPeriodKey()] || ''; toggleModal(budgetModal, true);});
+            setBudgetBtn.addEventListener('click', () => { 
+                const budgetInput = document.getElementById('budget-input');
+                budgetInput.value = budgets[getCurrentPeriodKey()] || ''; 
+                toggleModal(budgetModal, true);
+            });
             cancelBudgetBtn.addEventListener('click', () => toggleModal(budgetModal, false));
-            budgetForm.addEventListener('submit', (e) => { e.preventDefault(); budgets[getCurrentPeriodKey()] = parseFloat(budgetForm['budget-input'].value) || 0; userDocRef.update({ budgets }); toggleModal(budgetModal, false); });
+            budgetForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const newBudgetValue = parseFloat(budgetInput.value) || 0;
+                const periodKey = getCurrentPeriodKey();
+                
+                // Firestore uses dot notation to update nested objects
+                userDocRef.update({
+                    [`budgets.${periodKey}`]: newBudgetValue
+                })
+                .then(() => {
+                    showToast('Budget saved successfully!', 'success');
+                    toggleModal(budgetModal, false);
+                })
+                .catch(error => {
+                    showToast(`Error saving budget: ${error.message}`, 'error');
+                    toggleModal(budgetModal, false);
+                });
+            });
             
             const setLogFilter = (f) => { currentLogFilter = f; document.querySelectorAll('#log-filters .log-filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === f)); renderTable(); };
             logFilters.addEventListener('click', (e) => { if (e.target.classList.contains('log-filter-btn')) setLogFilter(e.target.dataset.filter); });
@@ -1159,6 +1216,8 @@
 
             appearanceForm.addEventListener('submit', (e) => { e.preventDefault(); settings.theme = themeSelect.value; settings.currencySymbol = currencySymbolInput.value; userDocRef.update({ settings }).then(() => showToast('Appearance saved!', 'info')); });
             
+            exportDataBtn.addEventListener('click', exportData);
+
             // Recurring and Savings Event Listeners
             recurringTransactionForm.addEventListener('submit', addRecurringTransaction);
             recurringTransactionsContainer.addEventListener('click', e => { if (e.target.classList.contains('delete-recurring-btn')) deleteRecurringTransaction(e.target.dataset.id); });
